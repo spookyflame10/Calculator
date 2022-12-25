@@ -5,14 +5,18 @@
     justify-content: center;
     align-items: center;
 }
-.result{
+.result-container{
     padding:20px;
     border: 5px;
     text-align:right;
-    background-color: aliceblue;
+    background-color: rgb(65, 65, 65);
     width: 500px;
-    
+    display:flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content:flex-start;
 }
+
 .button-container{
     display: grid;
     grid-template-columns: repeat(4, 1fr);
