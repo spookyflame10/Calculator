@@ -10,7 +10,18 @@ const numbers = document.querySelectorAll("[data-number]");
 const operators = document.querySelectorAll("[data-operator]");
 const clear = document.querySelector(".button");
 const equal = document.querySelector("[data-equal]");
+const changeSign = document.querySelector("#changeSign");
 
+changeSign.onclick = () => {
+  if(num ==''){
+    return; 
+  }
+  else{
+    num = '-'+num;
+    past = num;
+    result.textContent = past;
+  }
+}
 clear.addEventListener("click", clearResult);
 numbers.forEach((button) => button.addEventListener("click", makeNumber));
 operators.forEach((button) => button.addEventListener("click", setOperator));
@@ -132,9 +143,7 @@ function applyOp(op, a, b) {
       return a % b;
     case "/":
       if (b == 0) {
-        document.write(
-          "Cannot divide by zero. Because it will be infinity or something"
-        );
+        result.textContent ="Cannot divide by zero. Because it will be infinity or something";
       }
       return divide(a, b);
     default:
