@@ -1,7 +1,7 @@
 //variables
-let num = ""; //operands
+let num = ""; //only function is to make +/- work...
 let op = ""; //operators
-let past = ""; //control variable for what operator does
+let past = ""; //program is based on this to perform calculations
 let pastArray = [];
 //dom elements
 const result = document.querySelector(".result");
@@ -30,7 +30,7 @@ function extractNumbers(str) {
     // If the regular expression matches, parse the number as a float
     const num1 = parseFloat(match[0]);
     // Use a regular expression to match the operator
-    const re2 = /[+\-*/%]/;
+    const re2 = /[+\-*/%^]/;
     const match2 = str.substring(match[0].length).match(re2);
     if (match2) {
       // If the regular expression matches, extract the operator
@@ -51,7 +51,7 @@ function extractNumbers(str) {
 }
 //returns true if its of form numOpnum
 function numOpNum(past) {
-  return /^-?[0-9]+(\.[0-9]+)?[+\-*/%]-?[0-9]+(\.[0-9]+)?$/.test(past);
+  return /^-?[0-9]+(\.[0-9]+)?[+\-*/%^]-?[0-9]+(\.[0-9]+)?$/.test(past);
 }
 function equalFn() {
   if (numOpNum(past)) {
@@ -61,7 +61,7 @@ function equalFn() {
     let calculation = applyOp(pastArray[1], parseFloat(pastArray[0]), parseFloat(pastArray[2]));
     pastResult.textContent = pastArray[0] + op + pastArray[2] + "=";
     result.textContent = calculation;
-    num = "";
+    num = calculation;
     op = "";
     past = calculation;
   } else return; //not correct past form
@@ -76,7 +76,7 @@ function makeNumber(e) {
 
 function setOperator(e) {
   //when there is an op and past is of form 'number op'
-  if (op != "" && /^-?[0-9]+(\.[0-9]+)?[+\-*/%]$/.test(past)) {
+  if (op != "" && /^-?[0-9]+(\.[0-9]+)?[+\-*/%^]$/.test(past)) {
     return;
   }
   //when there is an op and past is of form 'num op num'
@@ -90,7 +90,7 @@ function setOperator(e) {
     op = e.target.dataset.operator;
     result.textContent = calculation + op;
     past = calculation + op;
-    num = "";
+    num = calculation;
   } else if (op === "") {
     op = e.target.dataset.operator;
     past += op;
@@ -126,7 +126,7 @@ function applyOp(op, a, b) {
       return subtract(a, b);
     case "*":
       return multiply(a, b);
-    case "**":
+    case "^":
       return power(a, b);
     case '%':
       return a % b;
