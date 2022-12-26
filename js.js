@@ -2,7 +2,7 @@
 let num = ""; //operands
 let op = ""; //operators
 let past = ""; //control variable for what operator does
-console.log(op);
+let pastArray = [];
 //dom elements
 const result = document.querySelector(".result");
 const pastResult = document.querySelector(".past-result");
@@ -16,24 +16,55 @@ numbers.forEach((button) => button.addEventListener("click", makeNumber));
 operators.forEach((button) => button.addEventListener("click", setOperator));
 equal.onclick = () => equalFn();
 function clearResult() {
-  past = '';
-  pastResult.textContent = '';
+  past = "";
+  pastResult.textContent = "";
   result.textContent = "";
-  num='';
+  num = "";
   op = "";
 }
+function extractNumbers(str) {
+  // Use a regular expression to match the first number
+  const re = /^-?[0-9]+(\.[0-9]+)?/;
+  const match = str.match(re);
+  if (match) {
+    // If the regular expression matches, parse the number as a float
+    const num1 = parseFloat(match[0]);
+    // Use a regular expression to match the operator
+    const re2 = /[+\-*/%]/;
+    const match2 = str.substring(match[0].length).match(re2);
+    if (match2) {
+      // If the regular expression matches, extract the operator
+      const op = match2[0];
+      // Use a regular expression to match the second number
+      const re3 = /-?[0-9]+(\.[0-9]+)?$/;
+      const match3 = str
+        .substring(match[0].length + match2[0].length)
+        .match(re3);
+      if (match3) {
+        // If the regular expression matches, parse the number as a float
+        const num2 = parseFloat(match3[0]);
+
+        return [num1, op, num2]
+      }
+    }
+  }
+}
+//returns true if its of form numOpnum
+function numOpNum(past) {
+  return /^-?[0-9]+(\.[0-9]+)?[+\-*/%]-?[0-9]+(\.[0-9]+)?$/.test(past);
+}
 function equalFn() {
-  if(/^[0-9]+[+\-*/][0-9]+$/.test(past)){
-    numArray = past.split(/[\+\-\*\/]/); // splits based on operators
-    let calculation = applyOp(op, parseInt(numArray[0]), parseInt(numArray[1]));
-    pastResult.textContent = numArray[0] + op + numArray[1] + "=";
+  if (numOpNum(past)) {
+    pastArray = extractNumbers(past); // splits based on operators
+    console.log(past);
+    console.log(pastArray);
+    let calculation = applyOp(pastArray[1], parseFloat(pastArray[0]), parseFloat(pastArray[2]));
+    pastResult.textContent = pastArray[0] + op + pastArray[2] + "=";
     result.textContent = calculation;
-    num='';
+    num = "";
     op = "";
     past = calculation;
-  }
-  else
-    return;//not correct past form
+  } else return; //not correct past form
 }
 
 function makeNumber(e) {
@@ -45,29 +76,29 @@ function makeNumber(e) {
 
 function setOperator(e) {
   //when there is an op and past is of form 'number op'
-  if (op != "" && /^[0-9]+[+\-*/]$/.test(past)) {
+  if (op != "" && /^-?[0-9]+(\.[0-9]+)?[+\-*/%]$/.test(past)) {
     return;
   }
   //when there is an op and past is of form 'num op num'
-  else if (op != "" && /^[0-9]+[+\-*/][0-9]+$/.test(past)) {
-    numArray = past.split(/[\+\-\*\/]/); // splits based on operators
-    let calculation = applyOp(op, parseInt(numArray[0]), parseInt(numArray[1]));
+  else if (op != "" && numOpNum(past)) {
+    pastArray = extractNumbers(past); // splits based on operators
+    let calculation = applyOp(pastArray[1], parseFloat(pastArray[0]), parseFloat(pastArray[2]));
     console.log(past);
-    pastResult.textContent = numArray[0] + op + numArray[1] + "=";
+    console.log(pastArray);
+    console.log(calculation);
+    pastResult.textContent = pastArray[0] + op + pastArray[2] + "=";
     op = e.target.dataset.operator;
-    result.textContent = calculation+op;
+    result.textContent = calculation + op;
     past = calculation + op;
-    num ='';
-  } else if ((op === '')) {
-    op = e.target.dataset.operator;
-    result.textContent = num+op;
-    past += op;
     num = "";
-  }
-  else
-    return;// some edge case like putting operator first
+  } else if (op === "") {
+    op = e.target.dataset.operator;
+    past += op;
+    result.textContent = past;
+    num = "";
+  } else console.log("hey");
+  return; // some edge case like putting operator first
 }
-
 
 function getInput(e) {
   if (Object.keys(e.target.dataset)[0] === "number") {
@@ -97,6 +128,8 @@ function applyOp(op, a, b) {
       return multiply(a, b);
     case "**":
       return power(a, b);
+    case '%':
+      return a % b;
     case "/":
       if (b == 0) {
         document.write(

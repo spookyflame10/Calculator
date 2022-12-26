@@ -16,7 +16,12 @@
     align-items: flex-end;
     justify-content:flex-start;
 }
-
+[data-operator]{
+    background-color: rgb(206, 36, 36);
+}
+[data-number]{
+    background-color: rgb(63, 63, 63);
+}
 .button-container{
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -24,7 +29,6 @@
     height: 500px;
 }
 .button{
-    background-color: #525252;
     border: 1px;
     border-radius: 4px;
     margin: 2px;
@@ -34,13 +38,14 @@
     font-size: 16px;
 }
 .footer {
-    margin-top: 50px;
-    height: 72px;
-    background: #1F2937;
-    color: rgb(255, 255, 255);
+    position: absolute;
+    bottom: 0;
+    left: 0;
     display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  bottom: 10px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    font-size: 20px;
 }
